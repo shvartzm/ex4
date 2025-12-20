@@ -59,6 +59,7 @@ void printSudoku(int[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE]);
 
 
 
+
 /******************************
 ********** MAIN MENU **********
 *******************************/
@@ -272,7 +273,15 @@ void printSudoku(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE])
 
 
 void task1ReversePhraseImplementation(){
-
+    char c = getchar();
+    if (c == '\n'){
+        printf("The reversed phrase is:\n");
+    }
+    else if (c != '\n'){
+        task1ReversePhraseImplementation();
+        printf("%c", c);
+    }
+    
 }
 
 
@@ -297,3 +306,4 @@ int task5SolveSudokuImplementation(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE]
 {
     return 0;
 }
+
