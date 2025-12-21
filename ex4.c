@@ -60,6 +60,7 @@ void printSudoku(int[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE]);
 
 
 
+
 /******************************
 ********** MAIN MENU **********
 *******************************/
@@ -245,6 +246,29 @@ int readTerms(char terms[][LONGEST_TERM+1], int maxNumOfTerms, char type[]){
     return termsCount;
 }
 
+void printObjects(char subject[], char verb[], char objects[][LONGEST_TERM+1], int objectsCount, int pos, int objectNum){
+    if (pos > 0){
+        printObjects(subject,verb,objects,objectsCount, pos - 1, objectNum - 1);
+    }
+    char sentence[LONGEST_SENTENCE];
+    strcpy(sentence, subject);
+    strcat(sentence," ");
+    strcat(sentence,verb);
+    strcat(sentence," ");
+    strcat(sentence,objects[pos]);
+    printf("%d. %s\n",objectNum,sentence);
+
+}
+
+void printVerbs(char subject[], char verbs[][LONGEST_TERM+1], int verbsCount, char objects[][LONGEST_TERM+1], int objectsCount, int pos,int verbNum){
+    if (pos >0){
+        printVerbs(subject,verbs,verbsCount,objects,objectsCount,pos - 1,verbNum);
+    }
+    int startNum = verbNum + (pos * objectsCount);
+    int printObjects(subject,verbs[pos],objects,objectsCount,objectsCount -1 ,startNum);
+
+}
+
 
 void printSudoku(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE])
 {
@@ -267,6 +291,8 @@ void printSudoku(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE])
     }
 }
 
+
+
 /***************************
 *********** TODO ***********
 ****************************/
@@ -287,11 +313,25 @@ void task1ReversePhraseImplementation(){
 
 int task2CheckPalindromeImplementation(int length)
 {
-    return 0;
+    if (length <= 1 ){
+        if (length == 1){
+            getchar();
+        }
+        return 1;
+    }
+    char charone = getchar();
+    int result = task2CheckPalindromeImplementation(length -2);
+    char chartwo = getchar();
+    return (charone == chartwo) & result;
+
 }
 
 
 void task3GenerateSentencesImplementation(char subjects[][LONGEST_TERM+1], int subjectsCount, char verbs[][LONGEST_TERM+1], int verbsCount, char objects[][LONGEST_TERM+1], int objectsCount){
+    if (subjectsCount > 1){
+       task3GenerateSentencesImplementation(subjects, subjectsCount - 1, verbs, verbsCount, objects, objectsCount);
+    }
+    printVerbs(subjects[subjectsCount - 1],verbs,verbsCount,objects,objectsCount,subjectsCount, subjectsCount);
 
 }
 
