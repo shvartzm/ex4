@@ -265,9 +265,9 @@ void printVerbs(char subject[], char verbs[][LONGEST_TERM+1], int verbsCount, ch
         printVerbs(subject,verbs,verbsCount,objects,objectsCount,pos - 1,verbNum);
     }
     int startNum = verbNum + (pos * objectsCount);
-    int printObjects(subject,verbs[pos],objects,objectsCount,objectsCount -1 ,startNum);
-
+    printObjects(subject,verbs[pos],objects,objectsCount,objectsCount - 1,startNum);
 }
+
 
 
 void printSudoku(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE])
@@ -331,7 +331,10 @@ void task3GenerateSentencesImplementation(char subjects[][LONGEST_TERM+1], int s
     if (subjectsCount > 1){
        task3GenerateSentencesImplementation(subjects, subjectsCount - 1, verbs, verbsCount, objects, objectsCount);
     }
-    printVerbs(subjects[subjectsCount - 1],verbs,verbsCount,objects,objectsCount,subjectsCount, subjectsCount);
+    int currSubject = subjectsCount - 1;
+    int startNum = 1 + (currSubject * verbsCount * objectsCount);
+    
+    printVerbs(subjects[currSubject],verbs,verbsCount,objects,objectsCount,verbsCount-1, startNum);
 
 }
 
