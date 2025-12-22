@@ -56,7 +56,9 @@ int task5SolveSudokuImplementation(int[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE]);
 
 int readTerms(char[][LONGEST_TERM+1], int, char[]);
 void printSudoku(int[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE]);
-
+void printObjects(char[],char[],char[][LONGEST_TERM+1],int,int,int);
+void printVerbs(char[],char[][LONGEST_TERM+1],int,char[][LONGEST_TERM+1],int,int,int);
+int isInBounds(int,int,int,int);
 
 
 
@@ -268,7 +270,50 @@ void printVerbs(char subject[], char verbs[][LONGEST_TERM+1], int verbsCount, ch
     printObjects(subject,verbs[pos],objects,objectsCount,objectsCount - 1,startNum);
 }
 
+int isInBounds(int rows, int cols, int row, int col){
+    return (row >= 0 && row < rows) && (col >= 0 && col < cols);
+}
 
+int task4SolveZipBoardRec(int board[ZIP_MAX_GRID_SIZE][ZIP_MAX_GRID_SIZE], char solution[ZIP_MAX_GRID_SIZE][ZIP_MAX_GRID_SIZE], int size, int currR, int currC, int highest,int currHighest, int counter){
+    int temp;
+    if(board[currR][currC] == highest && counter == size*size){
+        solution[currR][currC] = 'X';
+        return 1;
+    }
+    if (board[currR][currC] == currHighest + 1 || board[currR][currC] == 0){
+        if (board[currR][currC] == currHighest + 1) currHighest = board[currR][currC];
+        temp = board[currR][currC];
+        board[currR][currC] = -1;
+        if (isInBounds(size,size,currR - 1, currC)){
+            if (task4SolveZipBoardRec(board,solution,size,currR -1, currC,highest,currHighest,counter + 1)){
+               solution[currR][currC] = 'U';
+               return 1;
+            }
+        }
+        if (isInBounds(size,size,currR + 1, currC)){
+            if (task4SolveZipBoardRec(board,solution,size,currR +1, currC,highest,currHighest,counter + 1)){
+               solution[currR][currC] = 'D';
+               return 1;
+            }
+        }
+        if (isInBounds(size,size,currR, currC - 1)){
+            if (task4SolveZipBoardRec(board,solution,size,currR, currC -1,highest,currHighest,counter + 1)){
+               solution[currR][currC] = 'L';
+               return 1;
+            }
+        }
+        if (isInBounds(size,size,currR, currC + 1)){
+            if (task4SolveZipBoardRec(board,solution,size,currR, currC +1,highest,currHighest,counter + 1)){
+               solution[currR][currC] = 'R';
+               return 1;
+            }
+        }
+        board[currR][currC] = temp;
+        return 0;
+    }
+    return 0;
+    
+}
 
 void printSudoku(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE])
 {
@@ -341,6 +386,7 @@ void task3GenerateSentencesImplementation(char subjects[][LONGEST_TERM+1], int s
 
 int task4SolveZipBoardImplementation(int board[ZIP_MAX_GRID_SIZE][ZIP_MAX_GRID_SIZE], char solution[ZIP_MAX_GRID_SIZE][ZIP_MAX_GRID_SIZE], int size, int startR, int startC, int highest)
 {
+    return task4SolveZipBoardRec(board,solution,size,startR,startC,highest,0,1);
     return 0;
 }
 
