@@ -315,6 +315,36 @@ int task4SolveZipBoardRec(int board[ZIP_MAX_GRID_SIZE][ZIP_MAX_GRID_SIZE], char 
     
 }
 // function check duplicates in cube starting from bottom left
+
+int solveSudokuRec(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE], int row, int col){
+    if (row == 9){ // win
+        return 1;
+    }
+    if(board[row][col] == 0){
+        return numberAttempt(board,row,col,1);
+    }
+    if (col == SUDOKU_GRID_SIZE - 1){
+        return solveSudokuRec(board,row + 1, 0);
+    }
+    return solveSudokuRec(board,row, col + 1);
+}
+
+int numberAttempt(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE], int row, int col,int digitToTry){
+    int result;
+    if (digitToTry > 9){
+        board[row][col] = 0;
+        return 0;
+    }
+    board[row][col] = digitToTry;
+    result = checkCollumn(board,col,digitToTry,0,row) && checkRow(board,row,digitToTry,0,col);
+    if (checkBottomRightBox(SUDOKU_SUBGRID_SIZE,row,col)){
+        result &= isBoxPerfectRec(board,row,col,1,1);
+    }
+    if (result && solveSudokuRec(board,row,col)){
+        return 1;
+    }
+    return numberAttempt(board,row,col,digitToTry + 1);
+}
 int isBoxPerfectRec(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE], int row,int col,int rowCounter, int totalCounter){
     int result;
     int whichCounter;
@@ -338,6 +368,9 @@ int isBoxPerfectRec(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE], int row,int c
         if (checkBoxLoopRec(board,row, col -1, board[row][col],rowCounter + 1, totalCounter)){
             result = isBoxPerfectRec(board,row,col - 1, rowCounter + 1, totalCounter + 1);
         }
+        else{
+            result = 0;
+        }
     }
     return result;
 }
@@ -349,10 +382,37 @@ int checkBoxLoopRec(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE], int row,int c
     if (totalCounter == SUDOKU_SUBGRID_SIZE * SUDOKU_SUBGRID_SIZE){
         return 1;
     }
-    result = rowCounter == SUDOKU_SUBGRID_SIZE ? checkBoxLoopRec(board,row- 1,col,valueToCheck,rowCounter - 2,totalCounter + 1)
+    result = rowCounter == SUDOKU_SUBGRID_SIZE ? checkBoxLoopRec(board,row- 1,col + 2,valueToCheck,rowCounter - 2,totalCounter + 1)
                                       : checkBoxLoopRec(board,row,col - 1,valueToCheck, rowCounter + 1, totalCounter + 1);
     return result;
 }
+
+int checkBottomRightBox(int boxSize, int row, int col){
+    if (((row + 1) % boxSize == 0) && ((col + 1) % boxSize == 0)){
+        return 1;
+    }
+    return 0;
+}
+
+int checkCollumn(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE],int col, int valueToCheck, int currRow, int rowChecked){
+    if (!isInBounds(SUDOKU_GRID_SIZE,SUDOKU_GRID_SIZE,currRow,col)){
+        return 1;
+    }
+    if (board[currRow][col] == valueToCheck && currRow != rowChecked){
+        return 0;
+    }
+    return checkCollumn(board,col,valueToCheck,currRow + 1, rowChecked);
+}
+int checkRow(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE],int row, int valueToCheck, int currCol, int colChecked){
+    if (!isInBounds(SUDOKU_GRID_SIZE,SUDOKU_GRID_SIZE,row,currCol)){
+        return 1;
+    }
+    if (board[row][currCol] == valueToCheck && currCol != colChecked){
+        return 0;
+    }
+    return checkRow(board,row,valueToCheck,currCol + 1, colChecked);
+}
+
 
 void printSudoku(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE])
 {
@@ -432,6 +492,6 @@ int task4SolveZipBoardImplementation(int board[ZIP_MAX_GRID_SIZE][ZIP_MAX_GRID_S
 
 int task5SolveSudokuImplementation(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE])
 {
-    return 0;
+    return solveSudokuRec(board,0,0);
 }
 
