@@ -63,7 +63,7 @@ int task4SolveZipBoardRec(int[ZIP_MAX_GRID_SIZE][ZIP_MAX_GRID_SIZE],char[ZIP_MAX
 int solveSudokuRec(int[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE],int,int);
 int numberAttempt(int[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE],int,int,int);
 int isBoxPerfectRec(int[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE],int,int,int,int);
-int checkBoxLoopRec(int[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE],int,int,int,int,int);
+int checkBoxLoopRec(int[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE],int,int,int,int,int,int,int);
 int checkBottomRightBox(int,int,int);
 int checkCollumn(int[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE],int,int,int,int);
 int checkRow(int[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE],int,int,int,int);
@@ -370,7 +370,7 @@ int isBoxPerfectRec(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE], int row,int c
         return 1;
     }
     if (rowCounter == 3){
-        if (checkBoxLoopRec(board,row - 1, col + 2,board[row][col],rowCounter - 2,totalCounter)){
+        if (checkBoxLoopRec(board,row - 1, col + 2,board[row][col],rowCounter - 2,totalCounter,row,col)){
             result = isBoxPerfectRec(board,row - 1, col + 2, rowCounter - 2, totalCounter + 1);
         }
         else{
@@ -378,7 +378,7 @@ int isBoxPerfectRec(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE], int row,int c
         }
     }
     else {
-        if (checkBoxLoopRec(board,row, col -1, board[row][col],rowCounter + 1, totalCounter)){
+        if (checkBoxLoopRec(board,row, col -1, board[row][col],rowCounter + 1, totalCounter,row,col)){
             result = isBoxPerfectRec(board,row,col - 1, rowCounter + 1, totalCounter + 1);
         }
         else{
@@ -387,16 +387,18 @@ int isBoxPerfectRec(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE], int row,int c
     }
     return result;
 }
-int checkBoxLoopRec(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE], int row,int col, int valueToCheck, int rowCounter, int totalCounter){
+int checkBoxLoopRec(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE], int row,int col, int valueToCheck, int rowCounter, int totalCounter, int ignoreRow, int ignoreCol){
     int result;
     if (valueToCheck == board[row][col]){
-        return 0;
+        if (row != ignoreRow || col != ignoreCol) {
+            return 0;
+        }
     }
     if (totalCounter == SUDOKU_SUBGRID_SIZE * SUDOKU_SUBGRID_SIZE){
         return 1;
     }
-    result = rowCounter == SUDOKU_SUBGRID_SIZE ? checkBoxLoopRec(board,row- 1,col + 2,valueToCheck,rowCounter - 2,totalCounter + 1)
-                                      : checkBoxLoopRec(board,row,col - 1,valueToCheck, rowCounter + 1, totalCounter + 1);
+    result = rowCounter == SUDOKU_SUBGRID_SIZE ? checkBoxLoopRec(board,row- 1,col + 2,valueToCheck,rowCounter - 2,totalCounter + 1,ignoreRow,ignoreCol)
+                                      : checkBoxLoopRec(board,row,col - 1,valueToCheck, rowCounter + 1, totalCounter + 1,ignoreRow,ignoreCol);
     return result;
 }
 
