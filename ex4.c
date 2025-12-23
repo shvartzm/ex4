@@ -368,6 +368,9 @@ int isBoxPerfectRec(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE], int row,int c
         if (checkBoxLoopRec(board,row - 1, col + 2,board[row][col],rowCounter - 2,totalCounter)){
             result = isBoxPerfectRec(board,row - 1, col + 2, rowCounter - 2, totalCounter + 1);
         }
+        else{
+            result =0;
+        }
     }
     else {
         if (checkBoxLoopRec(board,row, col -1, board[row][col],rowCounter + 1, totalCounter)){
