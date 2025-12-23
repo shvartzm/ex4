@@ -337,6 +337,11 @@ int solveSudokuRec(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE], int row, int c
     if(board[row][col] == 0){
         return numberAttempt(board,row,col,1);
     }
+    if (checkBottomRightBox(SUDOKU_SUBGRID_SIZE, row, col)) {
+        if (!isBoxPerfectRec(board, row, col, 1, 1)) {
+            return 0;
+        }
+    }
     if (col == SUDOKU_GRID_SIZE - 1){
         return solveSudokuRec(board,row + 1, 0);
     }
