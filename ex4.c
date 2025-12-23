@@ -314,6 +314,45 @@ int task4SolveZipBoardRec(int board[ZIP_MAX_GRID_SIZE][ZIP_MAX_GRID_SIZE], char 
     return 0;
     
 }
+// function check duplicates in cube starting from bottom left
+int isBoxPerfectRec(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE], int row,int col,int rowCounter, int totalCounter){
+    int result;
+    int whichCounter;
+    if (totalCounter == (SUDOKU_SUBGRID_SIZE * SUDOKU_SUBGRID_SIZE) + 1){
+        return 1;
+    }
+    if (totalCounter % SUDOKU_SUBGRID_SIZE == 1){
+        whichCounter = 1;
+    }
+    else if(totalCounter % SUDOKU_SUBGRID_SIZE == 2){
+        whichCounter = 2;
+    }else {
+        whichCounter = 3;
+    }
+    if (rowCounter == 3){
+        if (checkBoxLoopRec(board,row - 1, col + 2,board[row][col],rowCounter - 2,totalCounter)){
+            result = isBoxPerfectRec(board,row - 1, col + 2, rowCounter - 2, totalCounter + 1);
+        }
+    }
+    else {
+        if (checkBoxLoopRec(board,row, col -1, board[row][col],rowCounter + 1, totalCounter)){
+            result = isBoxPerfectRec(board,row,col - 1, rowCounter + 1, totalCounter + 1);
+        }
+    }
+    return result;
+}
+int checkBoxLoopRec(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE], int row,int col, int valueToCheck, int rowCounter, int totalCounter){
+    int result;
+    if (valueToCheck == board[row][col]){
+        return 0;
+    }
+    if (totalCounter == SUDOKU_SUBGRID_SIZE * SUDOKU_SUBGRID_SIZE){
+        return 1;
+    }
+    result = rowCounter == SUDOKU_SUBGRID_SIZE ? checkBoxLoopRec(board,row- 1,col,valueToCheck,rowCounter - 2,totalCounter + 1)
+                                      : checkBoxLoopRec(board,row,col - 1,valueToCheck, rowCounter + 1, totalCounter + 1);
+    return result;
+}
 
 void printSudoku(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE])
 {
