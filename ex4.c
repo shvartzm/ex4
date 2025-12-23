@@ -389,13 +389,13 @@ int isBoxPerfectRec(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE], int row,int c
 }
 int checkBoxLoopRec(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE], int row,int col, int valueToCheck, int rowCounter, int totalCounter, int ignoreRow, int ignoreCol){
     int result;
+    if (totalCounter == SUDOKU_SUBGRID_SIZE * SUDOKU_SUBGRID_SIZE){
+        return 1;
+    }
     if (valueToCheck == board[row][col]){
         if (row != ignoreRow || col != ignoreCol) {
             return 0;
         }
-    }
-    if (totalCounter == SUDOKU_SUBGRID_SIZE * SUDOKU_SUBGRID_SIZE){
-        return 1;
     }
     result = rowCounter == SUDOKU_SUBGRID_SIZE ? checkBoxLoopRec(board,row- 1,col + 2,valueToCheck,rowCounter - 2,totalCounter + 1,ignoreRow,ignoreCol)
                                       : checkBoxLoopRec(board,row,col - 1,valueToCheck, rowCounter + 1, totalCounter + 1,ignoreRow,ignoreCol);
@@ -407,7 +407,7 @@ int checkBottomRightBox(int boxSize, int row, int col){
         return 1;
     }
     return 0;
-}
+}   
 
 int checkCollumn(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE],int col, int valueToCheck, int currRow, int rowChecked){
     if (!isInBounds(SUDOKU_GRID_SIZE,SUDOKU_GRID_SIZE,currRow,col)){
