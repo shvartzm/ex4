@@ -361,7 +361,6 @@ int numberAttempt(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE], int row, int co
 }
 int isBoxPerfectRec(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE], int row,int col,int rowCounter, int totalCounter){
     int result;
-    int whichCounter;
     if (totalCounter == (SUDOKU_SUBGRID_SIZE * SUDOKU_SUBGRID_SIZE) + 1){
         return 1;
     }
