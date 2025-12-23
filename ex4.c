@@ -59,6 +59,20 @@ void printSudoku(int[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE]);
 void printObjects(char[],char[],char[][LONGEST_TERM+1],int,int,int);
 void printVerbs(char[],char[][LONGEST_TERM+1],int,char[][LONGEST_TERM+1],int,int,int);
 int isInBounds(int,int,int,int);
+int task4SolveZipBoardRec(int[ZIP_MAX_GRID_SIZE][ZIP_MAX_GRID_SIZE],char[ZIP_MAX_GRID_SIZE][ZIP_MAX_GRID_SIZE],int,int,int,int,int,int);
+int solveSudokuRec(int[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE],int,int);
+int numberAttempt(int[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE],int,int,int);
+int isBoxPerfectRec(int[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE],int,int,int,int);
+int checkBoxLoopRec(int[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE],int,int,int,int,int);
+int checkBottomRightBox(int,int,int);
+int checkCollumn(int[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE],int,int,int,int);
+int checkRow(int[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE],int,int,int,int);
+
+
+
+
+
+
 
 
 
