@@ -27,6 +27,12 @@
 #define SUDOKU_GRID_SIZE 9
 #define SUDOKU_SUBGRID_SIZE 3
 
+/***************************
+*     HELPER PARAMETERS *
+****************************/
+
+#define STEP_ONE 1
+#define STEP_TWO 2
 
 /***************************
 * USER INTEFACE PROTOTYPES *
@@ -270,7 +276,7 @@ void printObjects(char subject[], char verb[], char objects[][LONGEST_TERM+1], i
      int pos, int objectNum){
     if (pos > 0){
         // go from up to down
-        printObjects(subject,verb,objects,objectsCount, pos - 1, objectNum - 1);
+        printObjects(subject,verb,objects,objectsCount, pos - STEP_ONE, objectNum - STEP_ONE);
     }
     char sentence[LONGEST_SENTENCE];
     strcpy(sentence, subject);
@@ -288,10 +294,10 @@ void printVerbs(char subject[], char verbs[][LONGEST_TERM+1], int verbsCount,
      char objects[][LONGEST_TERM+1], int objectsCount, int pos,int verbNum){
     if (pos >0){
         // go up down
-        printVerbs(subject,verbs,verbsCount,objects,objectsCount,pos - 1,verbNum);
+        printVerbs(subject,verbs,verbsCount,objects,objectsCount,pos - STEP_ONE,verbNum);
     }
     int startNum = verbNum + (pos * objectsCount);
-    printObjects(subject,verbs[pos],objects,objectsCount,objectsCount - 1,startNum);
+    printObjects(subject,verbs[pos],objects,objectsCount,objectsCount - STEP_ONE,startNum);
 }
 
 //checks location is in bounds
@@ -308,30 +314,34 @@ int task4SolveZipBoardRec(int board[ZIP_MAX_GRID_SIZE][ZIP_MAX_GRID_SIZE], char 
         return 1;
     }
     // if we made it to the next one
-    if (board[currR][currC] == currHighest + 1 || board[currR][currC] == 0){
-        if (board[currR][currC] == currHighest + 1) currHighest = board[currR][currC];
+    if (board[currR][currC] == currHighest + STEP_ONE || board[currR][currC] == 0){
+        if (board[currR][currC] == currHighest + STEP_ONE) currHighest = board[currR][currC];
         temp = board[currR][currC];
         board[currR][currC] = -1;
-        if (isInBounds(size,size,currR - 1, currC)){
-            if (task4SolveZipBoardRec(board,solution,size,currR -1, currC,highest,currHighest,counter + 1)){
+        if (isInBounds(size,size,currR - STEP_ONE, currC)){
+            if (task4SolveZipBoardRec(board,solution,size,
+               currR -STEP_ONE, currC,highest,currHighest,counter + STEP_ONE)){
                solution[currR][currC] = 'U';
                return 1;
             }
         }
-        if (isInBounds(size,size,currR + 1, currC)){
-            if (task4SolveZipBoardRec(board,solution,size,currR +1, currC,highest,currHighest,counter + 1)){
+        if (isInBounds(size,size,currR + STEP_ONE, currC)){
+            if (task4SolveZipBoardRec(board,solution,size,
+               currR +STEP_ONE, currC,highest,currHighest,counter + STEP_ONE)){
                solution[currR][currC] = 'D';
                return 1;
             }
         }
-        if (isInBounds(size,size,currR, currC - 1)){
-            if (task4SolveZipBoardRec(board,solution,size,currR, currC -1,highest,currHighest,counter + 1)){
+        if (isInBounds(size,size,currR, currC - STEP_ONE)){
+            if (task4SolveZipBoardRec(board,solution,size,currR,
+               currC -STEP_ONE,highest,currHighest,counter + STEP_ONE)){
                solution[currR][currC] = 'L';
                return 1;
             }
         }
-        if (isInBounds(size,size,currR, currC + 1)){
-            if (task4SolveZipBoardRec(board,solution,size,currR, currC +1,highest,currHighest,counter + 1)){
+        if (isInBounds(size,size,currR, currC + STEP_ONE)){
+            if (task4SolveZipBoardRec(board,solution,size,currR, 
+               currC +STEP_ONE,highest,currHighest,counter + STEP_ONE)){
                solution[currR][currC] = 'R';
                return 1;
             }
@@ -345,7 +355,7 @@ int task4SolveZipBoardRec(int board[ZIP_MAX_GRID_SIZE][ZIP_MAX_GRID_SIZE], char 
 // function check duplicates in cube starting from bottom left
 
 int solveSudokuRec(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE], int row, int col){
-    if (row == 9){ // win
+    if (row == SUDOKU_GRID_SIZE){ // win
         return 1;
     }
     if(board[row][col] == 0){
@@ -353,14 +363,14 @@ int solveSudokuRec(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE], int row, int c
         return numberAttempt(board,row,col,1);
     }
     if (checkBottomRightBox(SUDOKU_SUBGRID_SIZE, row, col)) { // check if bottom box
-        if (!isBoxPerfectRec(board, row, col, 1, 1)) {
+        if (!isBoxPerfectRec(board, row, col, STEP_ONE, STEP_ONE)) {
             return 0;
         }
     }
     if (col == SUDOKU_GRID_SIZE - 1){
-        return solveSudokuRec(board,row + 1, 0); // made to end of row
+        return solveSudokuRec(board,row + STEP_ONE, 0); // made to end of row
     }
-    return solveSudokuRec(board,row, col + 1);// go forward
+    return solveSudokuRec(board,row, col + STEP_ONE);// go forward
 }
 
 int numberAttempt(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE], int row, int col,int digitToTry){
@@ -379,19 +389,21 @@ int numberAttempt(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE], int row, int co
     if (result && solveSudokuRec(board,row,col)){
         return 1;
     }
-    return numberAttempt(board,row,col,digitToTry + 1);
+    return numberAttempt(board,row,col,digitToTry + STEP_ONE);
 }
 int isBoxPerfectRec(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE],
      int row,int col,int rowCounter, int totalCounter){
     int result;
     // reached end of box
-    if (totalCounter == (SUDOKU_SUBGRID_SIZE * SUDOKU_SUBGRID_SIZE) + 1){
+    if (totalCounter == (SUDOKU_SUBGRID_SIZE * SUDOKU_SUBGRID_SIZE) + STEP_ONE){
         return 1;
     }
     // reached end of row
-    if (rowCounter == 3){
-        if (checkBoxLoopRec(board,row - 1, col + 2,board[row][col],rowCounter - 2,totalCounter,row,col)){
-            result = isBoxPerfectRec(board,row - 1, col + 2, rowCounter - 2, totalCounter + 1);
+    if (rowCounter == SUDOKU_SUBGRID_SIZE){
+        if (checkBoxLoopRec(board,row - STEP_ONE, col + STEP_TWO,board[row][col],
+            rowCounter - STEP_TWO,totalCounter,row,col)){
+            result = isBoxPerfectRec(board,row - STEP_ONE, col + STEP_TWO, 
+            rowCounter - STEP_TWO, totalCounter + STEP_ONE);
         }
         else{
             result =0;
@@ -399,8 +411,10 @@ int isBoxPerfectRec(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE],
     }
     else {
         // just continue in row
-        if (checkBoxLoopRec(board,row, col -1, board[row][col],rowCounter + 1, totalCounter,row,col)){
-            result = isBoxPerfectRec(board,row,col - 1, rowCounter + 1, totalCounter + 1);
+        if (checkBoxLoopRec(board,row, col -STEP_ONE, board[row][col],
+            rowCounter + STEP_ONE, totalCounter,row,col)){
+            result = isBoxPerfectRec(board,row,col - STEP_ONE, 
+            rowCounter + STEP_ONE, totalCounter + STEP_ONE);
         }
         else{
             result = 0;
@@ -422,10 +436,10 @@ int checkBoxLoopRec(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE], int row,int c
         }
     }
     result = rowCounter == SUDOKU_SUBGRID_SIZE ? 
-    checkBoxLoopRec(board,row- 1,col + 2,valueToCheck,
-        rowCounter - 2,totalCounter + 1,ignoreRow,ignoreCol)
-                                      : checkBoxLoopRec(board,row,col - 1,
-                                        valueToCheck, rowCounter + 1, totalCounter + 1,
+    checkBoxLoopRec(board,row- STEP_ONE,col + STEP_TWO,valueToCheck,
+        rowCounter - STEP_TWO,totalCounter + STEP_ONE,ignoreRow,ignoreCol)
+                                      : checkBoxLoopRec(board,row,col - STEP_ONE,
+                                        valueToCheck, rowCounter + STEP_ONE, totalCounter + STEP_ONE,
                                         ignoreRow,ignoreCol);
     return result;
 }
@@ -444,7 +458,7 @@ int checkCollumn(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE],int col, int valu
     if (board[currRow][col] == valueToCheck && currRow != rowChecked){
         return 0;
     }
-    return checkCollumn(board,col,valueToCheck,currRow + 1, rowChecked);
+    return checkCollumn(board,col,valueToCheck,currRow + STEP_ONE, rowChecked);
 }
 //check validity in rows
 int checkRow(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE],int row, int valueToCheck, int currCol, int colChecked){
@@ -454,7 +468,7 @@ int checkRow(int board[SUDOKU_GRID_SIZE][SUDOKU_GRID_SIZE],int row, int valueToC
     if (board[row][currCol] == valueToCheck && currCol != colChecked){
         return 0;
     }
-    return checkRow(board,row,valueToCheck,currCol + 1, colChecked);
+    return checkRow(board,row,valueToCheck,currCol + STEP_ONE, colChecked);
 }
 
 
@@ -508,7 +522,7 @@ int task2CheckPalindromeImplementation(int length)
         return 1;
     }
     char charone = getchar();
-    int result = task2CheckPalindromeImplementation(length -2);
+    int result = task2CheckPalindromeImplementation(length -STEP_TWO);
     char chartwo = getchar();
     return (charone == chartwo) & result;
 
@@ -518,12 +532,14 @@ int task2CheckPalindromeImplementation(int length)
 void task3GenerateSentencesImplementation(char subjects[][LONGEST_TERM+1], int subjectsCount,
      char verbs[][LONGEST_TERM+1], int verbsCount, char objects[][LONGEST_TERM+1], int objectsCount){
     if (subjectsCount > 1){
-       task3GenerateSentencesImplementation(subjects, subjectsCount - 1, verbs, verbsCount, objects, objectsCount);
+       task3GenerateSentencesImplementation(subjects, subjectsCount - STEP_ONE, verbs,
+         verbsCount, objects, objectsCount);
     }
-    int currSubject = subjectsCount - 1;
+    int currSubject = subjectsCount - STEP_ONE;
     int startNum = 1 + (currSubject * verbsCount * objectsCount);
     
-    printVerbs(subjects[currSubject],verbs,verbsCount,objects,objectsCount,verbsCount-1, startNum);
+    printVerbs(subjects[currSubject],verbs,verbsCount,
+              objects,objectsCount,verbsCount-STEP_ONE, startNum);
 
 }
 
